@@ -159,6 +159,12 @@ struct xe_exec_queue *xe_exec_queue_create(struct xe_device *xe, struct xe_vm *v
 	if (err)
 		goto err_post_alloc;
 
+	/* GPU work period record */
+	q->record.last_ts = 0;
+	atomic64_set(&q->record.start_time_ns, 0);
+	INIT_LIST_HEAD(&q->record.ws_link);
+	spin_lock_init(&q->record.lock);
+
 	return q;
 
 err_post_alloc:

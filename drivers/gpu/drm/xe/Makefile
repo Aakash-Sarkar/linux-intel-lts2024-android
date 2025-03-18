@@ -38,6 +38,7 @@ xe-y += xe_bb.o \
 	xe_exec_queue.o \
 	xe_force_wake.o \
 	xe_ggtt.o \
+	xe_gpu_work.o \
 	xe_gpu_scheduler.o \
 	xe_gsc.o \
 	xe_gsc_debugfs.o \

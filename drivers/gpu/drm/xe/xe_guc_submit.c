@@ -22,6 +22,7 @@
 #include "xe_device.h"
 #include "xe_exec_queue.h"
 #include "xe_force_wake.h"
+#include "xe_gpu_work.h"
 #include "xe_gpu_scheduler.h"
 #include "xe_gt.h"
 #include "xe_gt_clock.h"
@@ -721,6 +722,11 @@ guc_exec_queue_run_job(struct drm_sched_job *drm_job)
 
 	trace_xe_sched_job_run(job);
 
+	/* GPU work period */
+	if (unlikely(list_empty(&q->record.ws_link))) {
+		atomic64_set(&q->record.start_time_ns, ktime_get_raw_ns());
+	}
+
 	if (!exec_queue_killed_or_banned_or_wedged(q) && !xe_sched_job_is_error(job)) {
 		if (!exec_queue_registered(q))
 			register_exec_queue(q);
@@ -744,6 +750,7 @@ static void guc_exec_queue_free_job(struct drm_sched_job *drm_job)
 	struct xe_sched_job *job = to_xe_sched_job(drm_job);
 
 	trace_xe_sched_job_free(job);
+	xe_gpu_work_process_queue(job->q, &job->q->hwe->gpu_work);
 	xe_sched_job_put(job);
 }
 

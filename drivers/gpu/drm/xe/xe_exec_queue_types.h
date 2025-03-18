@@ -128,6 +128,20 @@ struct xe_exec_queue {
 		struct list_head link;
 	} lr;
 
+	/** @record: gpu work record for this queue */
+	struct work_record {
+		/* start time can be accessed b/w irq and thread
+		 * contexts. So keep it atomic
+		 */
+		atomic64_t start_time_ns;
+		/* timestamp */
+		u32 last_ts;
+		/* link to jobs list */
+		struct list_head ws_link;
+		/* lock protecting this record */
+		spinlock_t lock;
+	} record;
+
 	/** @ops: submission backend exec queue operations */
 	const struct xe_exec_queue_ops *ops;
 

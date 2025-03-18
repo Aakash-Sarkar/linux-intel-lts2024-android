@@ -18,6 +18,7 @@
 #include "xe_device.h"
 #include "xe_execlist.h"
 #include "xe_force_wake.h"
+#include "xe_gpu_work.h"
 #include "xe_gsc.h"
 #include "xe_gt.h"
 #include "xe_gt_ccs_mode.h"
@@ -603,6 +604,8 @@ static int hw_engine_init(struct xe_gt *gt, struct xe_hw_engine *hwe,
 	/* We reserve the highest BCS instance for USM */
 	if (xe->info.has_usm && hwe->class == XE_ENGINE_CLASS_COPY)
 		gt->usm.reserved_bcs_instance = hwe->instance;
+
+	xe_gpu_work_stats_init(hwe);
 
 	return devm_add_action_or_reset(xe->drm.dev, hw_engine_fini, hwe);
 

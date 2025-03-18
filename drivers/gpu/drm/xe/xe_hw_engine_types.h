@@ -9,6 +9,7 @@
 #include "xe_force_wake_types.h"
 #include "xe_lrc_types.h"
 #include "xe_reg_sr_types.h"
+#include "xe_gpu_work.h"
 
 /* See "Engine ID Definition" struct in the Icelake PRM */
 enum xe_engine_class {
@@ -150,6 +151,8 @@ struct xe_hw_engine {
 	struct xe_oa_unit *oa_unit;
 	/** @hw_engine_group: the group of hw engines this one belongs to */
 	struct xe_hw_engine_group *hw_engine_group;
+	/** @gpu_work: gpu work period stats for this engine */
+	struct xe_engine_work gpu_work;
 };
 
 enum xe_hw_engine_snapshot_source_id {
